@@ -33,7 +33,6 @@ let HomePage = (props) => {
     current: 1,
     pageSize: 5,
   });
-  const [isUploadSuccess, setIsUploadSuccess] = useState(false);
   let userLocal = localStorage.getObject('user');
   //hiển thị toàn bộ account
   useEffect(() => {
@@ -59,7 +58,6 @@ let HomePage = (props) => {
     };
     _getAllUsers();
   }, [
-    isUploadSuccess,
     isUpdateSuccess
   ]);
 
