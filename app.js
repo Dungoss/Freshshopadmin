@@ -1,3 +1,4 @@
+require("dotenv").config();
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -6,9 +7,10 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-
-var app = express();
-
+var authRouter = require('./routes/auth');
+const cors = require("cors");
+const app = express();
+app.use(cors());
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -21,11 +23,36 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/auth', authRouter);
+app.get("/logout", async (req, res) => {
+  if (req.headers.authorization) {
+    const token = req.headers.authorization.split(" ")[1];
+    try {
+      await redisClient.LPUSH("token", token);
+      return res.status(200).json({
+        status: 200,
+        data: "You are logged out",
+      });
+    } catch (error) {
+      return res.status(400).json({
+        status: 500,
+        error: error.toString(),
+      });
+    }
+  } else {
+    return res.status(301).json({
+      status: 301,
+      error: "invalid token",
+    });
+  }
+});
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
 });
+
 
 // error handler
 app.use(function(err, req, res, next) {
