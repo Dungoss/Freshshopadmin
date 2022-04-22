@@ -1,9 +1,7 @@
 const jwt = require('jsonwebtoken');
-// const clientRedis = require('../config/redis');
-// const util = require('util');
-// clientRedis.get = util.promisify(clientRedis.get);
+const clientRedis = require('../config/redis.js');
 const { sendError } = require('../utils/index');
-
+const AccountModel = require('../models/accountModel')
 async function checkAuth(req, res, next) {
     var token = null;
     if (req.cookies && req.cookies['token']) {
@@ -19,58 +17,45 @@ async function checkAuth(req, res, next) {
         token = authHeader.substring(7, authHeader.length);
     }
     // check backlist token
-    clientRedis.lrange('token', 0, -1, async(err, result) => {
-        if (result.includes(token)) {
-            return res.status(500).json(sendError(INVALID_TOKEN));
-        }
+    const tokenUsed = await clientRedis.LRANGE('token', 0, -1);
+    if (tokenUsed.includes(token)) {
+        return res.status(500).json(sendError(INVALID_TOKEN));
+    }
 
-        try {
-            // decode token
-            const decode = await jwt.verify(token, process.env.JWT_SECRET);
-            if (!decode) {
-                res.status(500).json(sendError(INVALID_TOKEN));
-            }
-            req.id = decode._id
-            let userLocal = await AccountModel.findById(decode._id);
-            userLocal.password = undefined;
-            req.user = userLocal;
-            next();
-        
-        } catch (error) {
-            res.status(500).json(sendError(LOGIN));
+    try {
+        // decode token
+        const decode = await jwt.verify(token, process.env.JWT_SECRET);
+        if (!decode) {
+            res.status(500).json(sendError(INVALID_TOKEN));
         }
-    });
-}
-
-let checkActive = (req, res, next) => {
-    if(req.user.status == 'active') {
+        let userLocal = await AccountModel.findById(decode._id);
+        userLocal.password = undefined;
+        req.user = userLocal;
         next();
-    } else {
-        return res.status(400).json(sendError(NEED_ACTIVE));
+    
+    } catch (error) {
+        res.status(500).json(sendError("Bạn chưa đăng nhập"));
     }
 }
 
-
-
 let checkAdmin = (req, res, next) => {
-    if (req.user.role == 'ADMIN') {
+    if (req.user.role === 'ADMIN') {
         next();
     } else {
-        return res.status(400).json(sendError(NOT_PERMISSON))
+        return res.status(403).json(sendError("Bạn không có quyền"))
     }
 }
 
 let checkStatusBlockUser = (req, res, next) => {
-    if(req.user.status !== "BLOCK"){
+    if(req.user.status === "ACTIVE"){
         next();
     }else{
-        return res.status(400).json(sendError()) 
+        return res.status(400).json(sendError("Tài khoản đã bị khóa")) 
     }
 }
 
 module.exports = { 
   checkAuth,
-  checkActive,
   checkAdmin,
   checkStatusBlockUser
 };
