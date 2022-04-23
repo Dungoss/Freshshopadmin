@@ -13,6 +13,7 @@ const HomePage = lazy(() => import('./views/HomePage'));
 const ProfilePage = lazy(() => import('./views/ProfilePage'));
 const UserPage = lazy(() => import('./views/UserPage'));
 const ProductPage = lazy(() => import('./views/ProductPage'));
+const OrderPage = lazy(() => import('./views/OrderPage'));
 const NotFound = lazy(() => import('./views/NotFound/NotFoundPage'));
 
 
@@ -28,6 +29,7 @@ export default function App() {
           <PrivateRoute exact component={UserPage} path="/user" />
           <PrivateRoute exact component={ProductPage} path="/product" />
           <PrivateRoute exact component={ProfilePage} path="/profile" />
+          <PrivateRoute exact component={OrderPage} path="/order" />
           <PrivateRoute exact={true} path="/*" component={NotFound} />
         </Switch>
       </Router>

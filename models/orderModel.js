@@ -1,35 +1,36 @@
 var mongoose = require("../config/dbConfig");
-let productSchema = mongoose.Schema({
+let orderSchema = mongoose.Schema({
     title: String,
     description: String,
-    thumbnail: {
-      type: String,
-      default: "https://fakeimg.pl/250x100"
-    },
-    pid: {
+    oid: {
       type: String,
       default: function(){
         let id = this._id.toString()
         return id.substring(id.length - 6, id.length).toUpperCase()
       }
     },
-    isDelete: {
-      type: Boolean,
-      default: false
+    idProduct: {
+      type: String,
+      ref: 'product'
+    },
+    idUser: {
+      type: String,
+      ref: 'account'
     },
     quantity: {
       type: Number,
       default: 0
     },
-    price: {
-      type: Number,
-      default: 0
+    price: Number,
+    status: {
+      type: String,
+      enum: ["DONE", "DOING", "PENDING"],
+      default: "PENDING"
     },
-    selled: { 
-      type: Number,
-      default: 0
+    isDelete: {
+      type: Boolean,
+      default: false
     },
-    totalPrice: Number,
     createdAt: {
       type: Number,
       default: Date.now()
@@ -44,5 +45,5 @@ let productSchema = mongoose.Schema({
     }
 });
 
-let ProductModel = mongoose.model("product", productSchema);
-module.exports = ProductModel;
+let OrderModel = mongoose.model("order", orderSchema);
+module.exports = OrderModel;

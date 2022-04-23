@@ -1,7 +1,7 @@
 import React from 'react';
 import {notification} from 'antd';
 export const errorNotify =  (err, message, duration = 3)=>{
-  if( (err.response && err.response.status === 401) || (err.response && err.response.data && err.response.data.message === 'Invalid token') || (err === 401)){
+  if( (err.response && err.response.status === 401) || (err.response && err.response.data && err.response.data.message === 'Invalid token') || (err.status === 401)){
     localStorage.removeItem('accessToken');
     localStorage.removeItem('user');
     notification.error({
@@ -14,7 +14,7 @@ export const errorNotify =  (err, message, duration = 3)=>{
   notification.error({
     duration:duration,
     message: message || "Không thành công",
-    description: (err.response && err.response.data && err.response.data.message) || "Không thể kết nối server"
+    description: err.data || (err.response && err.response.data && err.response.data.message) || "Không thể kết nối server"
   }) 
 }
 

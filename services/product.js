@@ -8,6 +8,10 @@ listServices.createProduct = (newProduct) => {
 listServices.findProductById = (id) => {
   return ProductModel.findOne({_id: id}).lean().exec()
 }
+
+listServices.getProductByPID = (pid) => {
+  return ProductModel.findOne({pid}).lean().exec()
+}
 listServices.getAllProduct = (query, userLocal) => {
   const current = Number(query?.current) || 1
   const pageSize = Number(query?.pageSize) || 5
