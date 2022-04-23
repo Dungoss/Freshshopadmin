@@ -1,0 +1,70 @@
+#product-page {
+  // font-size: 30px;
+  #account-table {
+    // width: fit-content;
+    // block-size: fit-content;
+    margin: 0 auto;
+    .ant-table-thead > tr > th {
+      font-weight: 700;
+      text-align: center;
+      background: #514e4e;
+      padding: 0;
+      text-align: center;
+      color: #ffffffed;
+    }
+
+    .ant-table-tbody > tr > td, .ant-table-thead > tr > td {
+      padding: 0px;
+      font-size: 13px;
+      border: 1px solid #0000001a;
+      text-align: center;
+      padding: 5px;
+    }
+    .ant-table-pagination-right{
+      justify-content: center;
+    }
+    .ant-table-tbody > tr.ant-table-row:hover > td {
+      background-color: transparent;
+    }
+    .anticon-search {
+      color: #ffffffed;
+      font-size: 14px;
+    }
+    .ant-table-row:nth-child(even) {
+      background: #87fc003b;
+    }
+    .text-copy:hover{
+      cursor: pointer;
+      color: green;
+      opacity: 0.5;
+    }
+
+  }
+  ul.ant-pagination.ant-table-pagination.ant-table-pagination-right{
+    justify-content: center;
+  }
+  .ant-typography{
+    margin-bottom: 0
+  }
+}
+@media all and (max-width: 1400px) {
+  #home-page {
+    #account-table {
+      .ant-table-thead > tr > th {
+        font-size: 12px !important;
+      }
+      .ant-table-tbody > tr > td {
+        font-size: 12px !important;
+      }
+      .ant-tag {
+        font-size: 12px;
+      }
+    }
+  }
+}
+
+.ant-spin.ant-spin-spinning {
+  position: fixed !important;
+  top: 50%;
+  left: 50%;
+}

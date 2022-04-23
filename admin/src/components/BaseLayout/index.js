@@ -66,6 +66,11 @@ let BaseLayout = (props) => {
                 Thông tin người dùng
               </Link>
             </Menu.Item>
+            <Menu.Item key="product" icon={<PieChartOutlined />}>
+              <Link to="/product">
+                Thông tin sản phẩm
+              </Link>
+            </Menu.Item>
           </Menu>
         </Sider>
         <Layout className="site-layout">

@@ -16,7 +16,7 @@ router.get('/', checkAuth, checkStatusBlockUser, checkAdmin, async function(req,
   }
 })
 
-router.put('/status/:id', async function(req, res, next){
+router.put('/status/:id',checkAuth, checkStatusBlockUser, checkAdmin, async function(req, res, next){
   try {
     await accountServices.updateStatus(req.params.id, req.body)
     return res.status(200).json(sendSuccess("Cập nhật thành công" ))
@@ -25,7 +25,7 @@ router.put('/status/:id', async function(req, res, next){
   }
 })
 
-router.delete('/:id', async function(req, res, next){
+router.delete('/:id', checkAuth, checkStatusBlockUser, checkAdmin, async function(req, res, next){
   try {
     await accountServices.deleteUser(req.params.id)
     return res.status(200).json(sendSuccess("Xóa thành công" ))

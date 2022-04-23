@@ -12,6 +12,7 @@ const LoginPage = lazy(() => import('./views/Login/LoginPage'));
 const HomePage = lazy(() => import('./views/HomePage'));
 const ProfilePage = lazy(() => import('./views/ProfilePage'));
 const UserPage = lazy(() => import('./views/UserPage'));
+const ProductPage = lazy(() => import('./views/ProductPage'));
 const NotFound = lazy(() => import('./views/NotFound/NotFoundPage'));
 
 
@@ -25,6 +26,7 @@ export default function App() {
           <PublicRoute component={LoginPage} path="/dang-nhap" />
           <PrivateRoute exact component={HomePage} path="/" />
           <PrivateRoute exact component={UserPage} path="/user" />
+          <PrivateRoute exact component={ProductPage} path="/product" />
           <PrivateRoute exact component={ProfilePage} path="/profile" />
           <PrivateRoute exact={true} path="/*" component={NotFound} />
         </Switch>
