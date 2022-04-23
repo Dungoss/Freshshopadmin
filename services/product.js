@@ -8,6 +8,9 @@ listServices.createProduct = (newProduct) => {
 listServices.findProductById = (id) => {
   return ProductModel.findOne({_id: id}).lean().exec()
 }
+listServices.getTopTenProduct = () => {
+  return ProductModel.find().sort({"totalPrice": -1}).limit(10).lean().exec()
+}
 
 listServices.getProductByPID = (pid) => {
   return ProductModel.findOne({pid}).lean().exec()

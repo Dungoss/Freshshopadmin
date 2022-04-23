@@ -17,6 +17,19 @@ router.get('/', checkAuth, checkStatusBlockUser, async function(req, res, next){
   }
 })
 
+
+router.get('/top-ten', checkAuth, checkStatusBlockUser, checkAdmin, async function(req, res, next){
+  try {
+    const result = await productServices.getTopTenProduct()
+    return res.status(200).json(sendSuccess("Hiển thị thành công", {
+      products: result,
+    }))
+  } catch (error) {
+    return res.status(500).json(sendError("Lỗi không xác định, vui lòng thử lại"))
+  }
+})
+
+
 router.get('/pid/:pid', checkAuth, checkStatusBlockUser, async function(req, res, next){
   try {
     const result = await productServices.getProductByPID(req.params.pid)
