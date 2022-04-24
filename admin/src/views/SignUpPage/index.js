@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form, Input, Button } from 'antd';
-import "./Login.scss"
-import { login } from "../../api/auth"
+import "./index.scss"
+import { signup } from "../../api/auth"
 import { errorNotify, successNotify } from '../../utils/notificationCommon';
 import {
   useHistory,
@@ -26,14 +26,10 @@ const Login = () => {
   let history = useHistory();
   const onFinish = async formData => {
     try {
-      var response = await login(formData);
+      var response = await signup(formData);
       if (response.status === 200) {
-        if (response.data.data.token) {
-          successNotify(response.data.message, 2)
-          localStorage.setItem('accessToken', response.data.data.token)
-          localStorage.setObject('user', response.data.data.user)
-          history.push('/');
-        }
+        successNotify(response.data.message, 2)
+        history.push('/dang-nhap');
       }
     } catch (error) {
       errorNotify(error, "", 2)
@@ -44,7 +40,7 @@ const Login = () => {
     <div className="login-page">
       <div className='login-form'>
         <div className="title-login">
-          ĐĂNG NHẬP
+          ĐĂNG KÝ
         </div>
         <Form
           {...layout}
@@ -71,6 +67,18 @@ const Login = () => {
           </Form.Item>
 
           <Form.Item
+            label="Tên"
+            name="name"
+            rules={[
+              {
+                required: true,
+                message: 'Vui lòng nhập tên',
+              }
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
             label="Mật khẩu"
             name="password"
             rules={[
@@ -82,11 +90,10 @@ const Login = () => {
           >
             <Input.Password autoComplete="on" />
           </Form.Item>
-          <Link to="/dang-ky">Chuyển sang trang đăng ký</Link>
-
+          <Link to="/dang-nhap">Chuyển sang trang đăng nhập</Link>
           <Form.Item {...tailLayout}>
             <Button type="primary" htmlType="submit">
-              Đăng nhập
+              Đăng ký
             </Button>
           </Form.Item>
         </Form>

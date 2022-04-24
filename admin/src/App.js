@@ -9,6 +9,7 @@ import {
   Spin
 } from 'antd';
 const LoginPage = lazy(() => import('./views/Login/LoginPage'));
+const SignUpPage = lazy(() => import('./views/SignUpPage'));
 const HomePage = lazy(() => import('./views/HomePage'));
 const ProfilePage = lazy(() => import('./views/ProfilePage'));
 const UserPage = lazy(() => import('./views/UserPage'));
@@ -25,6 +26,7 @@ export default function App() {
       <Router>
         <Switch>
           <PublicRoute component={LoginPage} path="/dang-nhap" />
+          <PublicRoute component={SignUpPage} path="/dang-ky" />
           <PrivateRoute exact component={HomePage} path="/" />
           <PrivateRoute exact component={UserPage} path="/user" />
           <PrivateRoute exact component={ProductPage} path="/product" />
