@@ -36,6 +36,7 @@ const Login = () => {
         }
       }
     } catch (error) {
+      console.log(error)
       errorNotify(error, "", 2)
     }
   };

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
-
+import { message } from 'antd'
 export const PublicRoute = ({ component: Component, ...rest }) => {
   return (
     <Route {...rest} render={props => (
@@ -21,7 +21,14 @@ export const PrivateRoute = ({ component: Component, ...rest }) => {
               to='/dang-nhap'
             />
         let userLocal = localStorage.getObject('user');
-        if(!userLocal?.role || userLocal?.role === 'USER' || userLocal?.status === 'BLOCK') return loginCompoent;
+        if(!userLocal?.role || userLocal?.role === 'USER') {
+          message.error("Bạn không có quyền")
+          return loginCompoent;
+        }
+        if(userLocal?.status === 'BLOCK') {
+          message.error("Tài khoản của bạn đã bị khóa")
+          return loginCompoent;
+        }
         //check login
         if (!accessToken) return loginCompoent;
         return componentRender

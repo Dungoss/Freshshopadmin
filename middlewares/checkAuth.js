@@ -19,7 +19,7 @@ async function checkAuth(req, res, next) {
     // check backlist token
     const tokenUsed = await clientRedis.LRANGE('token', 0, -1);
     if (tokenUsed.includes(token)) {
-        return res.status(500).json(sendError(INVALID_TOKEN));
+        return res.status(500).json(sendError({ message: 'Token không tồn tại'}));
     }
 
     try {
@@ -31,26 +31,31 @@ async function checkAuth(req, res, next) {
         let userLocal = await AccountModel.findById(decode._id);
         userLocal.password = undefined;
         req.user = userLocal;
-        next();
+        return next();
     
     } catch (error) {
-        res.status(500).json(sendError("Bạn chưa đăng nhập"));
+        return res.status(401).json(sendError({ message: "Bạn chưa đăng nhập" }));
     }
 }
 
 let checkAdmin = (req, res, next) => {
+    console.log("here")
+
     if (req.user.role === 'ADMIN') {
-        next();
+        return next();
     } else {
-        return res.status(403).json(sendError("Bạn không có quyền"))
+        return res.status(403).json(sendError({ message: "Bạn không có quyền" }))
     }
 }
 
 let checkStatusBlockUser = (req, res, next) => {
+    console.log("here")
+
     if(req.user.status === "ACTIVE"){
-        next();
+        return next();
     }else{
-        return res.status(400).json(sendError("Tài khoản đã bị khóa")) 
+        console.log("here")
+        return res.status(400).json(sendError({message: "Tài khoản đã bị khóa"})) 
     }
 }
 
