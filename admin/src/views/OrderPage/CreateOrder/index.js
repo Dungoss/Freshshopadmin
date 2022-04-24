@@ -14,6 +14,11 @@ const DetailUserComponent = ({ visible, setVisible, setIsUpdateSuccess }) => {
   const [form] = Form.useForm();
   const handleCancel = () => {
     setVisible(false)
+    setUserSelect({})
+    setProductSelect({})
+    setUserNeed("")
+    form.resetFields()
+
   };
 
   const onFinish = async (newOrder) => {
@@ -108,7 +113,7 @@ const DetailUserComponent = ({ visible, setVisible, setIsUpdateSuccess }) => {
 
             <Typography.Paragraph><span style={{ color: 'red' }}>*</span>Nhập số lượng: </Typography.Paragraph>
             <Form.Item name="quantity" rules={[{ required: true, message: 'Vui lòng nhập thông tin' }]}>
-              <InputNumber placeholder="Nhập số lượng" style={{ width: "100%" }} min="0" max={productSelect.quantity || 0} />
+              <InputNumber placeholder="Nhập số lượng" style={{ width: "100%" }} min="0" max={productSelect?.quantity || 0} />
             </Form.Item>
             <Typography.Paragraph><span style={{ color: 'red' }}>*</span>Chọn trạng thái: </Typography.Paragraph>
             <Form.Item name="status" rules={[{ required: true, message: 'Vui lòng nhập thông tin' }]}>
@@ -122,7 +127,7 @@ const DetailUserComponent = ({ visible, setVisible, setIsUpdateSuccess }) => {
               <Button type="primary" htmlType="submit">
                 Tạo mới
               </Button>
-              <Button type="link" htmlType="button">
+              <Button type="link" htmlType="button" onClick={handleCancel}>
                 Hủy
               </Button>
             </Form.Item>

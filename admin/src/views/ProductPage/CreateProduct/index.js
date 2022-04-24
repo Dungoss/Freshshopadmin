@@ -11,6 +11,8 @@ const DetailUserComponent = ({ visible, setVisible, setIsUpdateSuccess }) => {
   const [form] = Form.useForm();
   const handleCancel = () => {
     setVisible(false)
+    setThumbnail("")
+    form.resetFields()
   };
 
   const onFinish = async (newProduct) => {
