@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Button, message } from 'antd';
 import "./Login.scss"
 import { login } from "../../api/auth"
 import { errorNotify, successNotify } from '../../utils/notificationCommon';
@@ -36,8 +36,7 @@ const Login = () => {
         }
       }
     } catch (error) {
-      console.log(error)
-      errorNotify(error, "", 2)
+      message.error(error.response.data.message)
     }
   };
 

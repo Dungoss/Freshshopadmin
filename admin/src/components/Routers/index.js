@@ -22,7 +22,7 @@ export const PrivateRoute = ({ component: Component, ...rest }) => {
             />
         let userLocal = localStorage.getObject('user');
         if(!userLocal?.role || userLocal?.role === 'USER') {
-          message.error("Bạn không có quyền")
+          // message.error("Bạn không có quyền")
           return loginCompoent;
         }
         if(userLocal?.status === 'BLOCK') {

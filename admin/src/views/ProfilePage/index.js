@@ -1,15 +1,38 @@
 import React, { useState, useEffect } from 'react';
-import { Tag, Row, Col } from 'antd';
+import { Tag, Row, Col, Button } from 'antd';
 import "./index.scss"
 import BaseLayout from '../../components/BaseLayout';
+import ModalCreateAccount from './UpdateProfile';
 
 import moment from 'moment';
 const DetailUserComponent = ({ visible, account, setVisible }) => {
-  const [accountInfoData] = useState(localStorage.getObject("user"))
-
+  const [accountInfoData, setAccountInfoData] = useState(localStorage.getObject("user"))
+  let [isVisibleCreate, setVisibleCreate] = useState(false);
   return (
     <BaseLayout>
       <div id="profile-account">
+        <ModalCreateAccount
+          visible={isVisibleCreate}
+          setVisible={setVisibleCreate}
+          setAccountInfoData={setAccountInfoData}
+        />
+        <div
+          style={{
+            width: '100%',
+            marginBottom: '30px',
+          }}
+        >
+          <Button style={{
+            backgroundColor: "#39AEA9",
+            marginLeft: "30px",
+            color: 'white'
+          }}
+            onClick={() => {
+              // setIsVisibleSearchAdvanced(true)
+              setVisibleCreate(true)
+            }}
+          >Cập nhật</Button>
+        </div>
         <Row gutter={[16, 16]}>
           <Col span={8} style={{ textAlign: "right" }} className="col-title">
             Name:

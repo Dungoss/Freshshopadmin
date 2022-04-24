@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Button, message } from 'antd';
 import "./index.scss"
 import { signup } from "../../api/auth"
 import { errorNotify, successNotify } from '../../utils/notificationCommon';
@@ -32,7 +32,7 @@ const Login = () => {
         history.push('/dang-nhap');
       }
     } catch (error) {
-      errorNotify(error, "", 2)
+      message.error(error.response.data.message)
     }
   };
 

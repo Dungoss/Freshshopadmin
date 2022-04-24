@@ -19,7 +19,7 @@ router.get('/', checkAuth, checkStatusBlockUser, checkAdmin, async function(req,
   }
 })
 
-router.get('/email/:email', checkAuth, checkStatusBlockUser, async function(req, res, next){
+router.get('/email/:email', checkAuth, checkStatusBlockUser, checkAdmin, async function(req, res, next){
   try {
     const result = await accountServices.checkAccountExist(req.params.email)
     return res.status(200).json(sendSuccess("Hiển thị thành công", {
@@ -33,9 +33,33 @@ router.get('/email/:email', checkAuth, checkStatusBlockUser, async function(req,
   }
 })
 
-router.put('/status/:id',checkAuth, checkStatusBlockUser, async function(req, res, next){
+router.post('/',checkAuth, checkStatusBlockUser, checkAdmin, async function(req, res, next){
+  try {
+    await accountServices.createNewAccount(req.body)
+    return res.status(200).json(sendSuccess("Tạo thành công" ))
+  } catch (error) {
+    if(error?.message){
+      return res.status(500).json(sendError({message: error.message}))
+    }
+    return res.status(500).json(sendError("Lỗi không xác định, vui lòng thử lại"))
+  }
+})
+
+router.put('/status/:id',checkAuth, checkStatusBlockUser, checkAdmin, async function(req, res, next){
   try {
     await accountServices.updateStatus(req.params.id, req.body)
+    return res.status(200).json(sendSuccess("Cập nhật thành công" ))
+  } catch (error) {
+    if(error?.message){
+      return res.status(500).json(sendError({message: error.message}))
+    }
+    return res.status(500).json(sendError("Lỗi không xác định, vui lòng thử lại"))
+  }
+})
+
+router.put('/:id',checkAuth, checkStatusBlockUser, checkAdmin, async function(req, res, next){
+  try {
+    await accountServices.updateAccount(req.params.id, req.body)
     return res.status(200).json(sendSuccess("Cập nhật thành công" ))
   } catch (error) {
     if(error?.message){

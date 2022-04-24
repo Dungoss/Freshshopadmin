@@ -16,6 +16,7 @@ import {
   destroyUserAPI
 } from '../../api/user';
 import ModalDetailAccount from './DetailAccount';
+import ModalCreateAccount from './CreateUser';
 // import ModalUploadExcel from './UploadExcel';
 // import ModalUpdateSaleByLinkProduct from './UpdateSaleByLinkProduct';
 import BaseLayout from '../../components/BaseLayout';
@@ -27,6 +28,7 @@ let HomePage = (props) => {
   let [userDetail, setUserDetail] = useState([]);
   let [totalUsersSource, setTotalUsersSource] = useState([]);
   let [isVisibleDetail, setVisibleDetail] = useState(0);
+  let [isVisibleCreate, setVisibleCreate] = useState(false);
   let [isUpdateSuccess, setIsUpdateSuccess] = useState(false);
   let [loading, setLoading] = useState(false);
   let [conditionSearch, setConditionSearch] = useState({
@@ -90,26 +92,6 @@ let HomePage = (props) => {
       errorNotify(error)
     }
   }
-  const handleSearMailInput = _.throttle(async (e) => {
-    // try {
-    //   setLoading(true);
-    //   const res = await searchMailAPI({ mail: e.target.value })
-    //   if (res.status === 200) {
-    //     let handleDataRes = res.data.data.accounts.length
-    //       ? res.data.data.accounts.map((accountItem, index) => {
-    //         accountItem.key = index + 1;
-    //         return accountItem;
-    //       })
-    //       : [];
-    //     setUsersSource(handleDataRes);
-    //     setTotalUsersSource(30);
-    //   }
-    // } catch (error) {
-    //   errorNotify(error, '', 2);
-    // } finally {
-    //   setLoading(false);
-    // }
-  }, 3000)
   function copyTextToClipBoard(text, typeCopy) {
     typeCopy = typeCopy.toUpperCase() || '';
     var textField = document.createElement('textarea');
@@ -270,22 +252,19 @@ let HomePage = (props) => {
               setVisible={setVisibleDetail}
               account={userDetail}
             />
+             <ModalCreateAccount
+              visible={isVisibleCreate}
+              setVisible={setVisibleCreate}
+              setIsUpdateSuccess={setIsUpdateSuccess}
+            />
             <div id="home-page" className="home-page">
-              {/* <div
+              <div
                 style={{
                   width: '100%',
                   marginBottom: '30px',
+                  textAlign: 'right',
                 }}
               >
-                <Input
-                  size="middle"
-                  style={{
-                    width: '300px'
-                  }}
-                  placeholder="Tìm kiếm theo mail"
-                  onChange={handleSearMailInput}
-                />
-
                 <Button style={{
                   backgroundColor: "#39AEA9",
                   marginLeft: "30px",
@@ -293,9 +272,10 @@ let HomePage = (props) => {
                 }}
                   onClick={() => {
                     // setIsVisibleSearchAdvanced(true)
+                    setVisibleCreate(true)
                   }}
-                >Tìm kiếm</Button>
-              </div> */}
+                >Thêm user</Button>
+              </div>
               <Table
                 dataSource={usersSource}
                 columns={columnsAdmin}

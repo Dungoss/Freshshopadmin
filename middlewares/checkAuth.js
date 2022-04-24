@@ -39,8 +39,6 @@ async function checkAuth(req, res, next) {
 }
 
 let checkAdmin = (req, res, next) => {
-    console.log("here")
-
     if (req.user.role === 'ADMIN') {
         return next();
     } else {
@@ -49,12 +47,9 @@ let checkAdmin = (req, res, next) => {
 }
 
 let checkStatusBlockUser = (req, res, next) => {
-    console.log("here")
-
     if(req.user.status === "ACTIVE"){
         return next();
     }else{
-        console.log("here")
         return res.status(400).json(sendError({message: "Tài khoản đã bị khóa"})) 
     }
 }

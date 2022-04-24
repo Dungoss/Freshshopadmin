@@ -14,7 +14,7 @@ export const errorNotify =  (err, message, duration = 3)=>{
   notification.error({
     duration:duration,
     message: message || "Không thành công",
-    description: err.data || (err.response && err.response.data && err.response.data.message) || "Không thể kết nối server"
+    description: err.data || (err?.response?.data?.message)  || "Không thể kết nối server"
   }) 
 }
 
