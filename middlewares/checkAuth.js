@@ -2,6 +2,26 @@ const jwt = require('jsonwebtoken');
 const clientRedis = require('../config/redis.js');
 const { sendError } = require('../utils/index');
 const AccountModel = require('../models/accountModel')
+const util = require('util');
+clientRedis.get = util.promisify(clientRedis.get);
+
+async function getOrSetCacheRedis(key, cb) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const data = await clientRedis.GET(key)
+        if(data != null){
+            console.log("aaaa")
+          return resolve(JSON.parse(data));
+        }
+        const freshData = await cb;
+
+        clientRedis.SETEX(key, 60*60*1000, JSON.stringify(freshData))
+        return resolve(freshData);
+      } catch (error) {
+        return reject(error);
+      }
+    })
+  }
 async function checkAuth(req, res, next) {
     var token = null;
     if (req.cookies && req.cookies['token']) {
@@ -26,14 +46,15 @@ async function checkAuth(req, res, next) {
         // decode token
         const decode = await jwt.verify(token, process.env.JWT_SECRET);
         if (!decode) {
-            res.status(500).json(sendError(INVALID_TOKEN));
+            return res.status(500).json(sendError({ message: "token không tồn tại" }));
         }
-        let userLocal = await AccountModel.findById(decode._id);
+        let userLocal =  await getOrSetCacheRedis(`user-${decode._id}`, AccountModel.findById(decode._id))
         userLocal.password = undefined;
         req.user = userLocal;
         return next();
     
     } catch (error) {
+        console.log(error)
         return res.status(401).json(sendError({ message: "Bạn chưa đăng nhập" }));
     }
 }
