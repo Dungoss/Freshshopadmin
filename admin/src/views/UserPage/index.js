@@ -271,7 +271,7 @@ let HomePage = (props) => {
               account={userDetail}
             />
             <div id="home-page" className="home-page">
-              <div
+              {/* <div
                 style={{
                   width: '100%',
                   marginBottom: '30px',
@@ -295,7 +295,7 @@ let HomePage = (props) => {
                     // setIsVisibleSearchAdvanced(true)
                   }}
                 >Tìm kiếm</Button>
-              </div>
+              </div> */}
               <Table
                 dataSource={usersSource}
                 columns={columnsAdmin}

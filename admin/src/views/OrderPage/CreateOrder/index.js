@@ -9,6 +9,7 @@ import _ from 'lodash';
 const DetailUserComponent = ({ visible, setVisible, setIsUpdateSuccess }) => {
   const [productSelect, setProductSelect] = useState({})
   const [userSelect, setUserSelect] = useState({})
+  const [userNeed, setUserNeed] = useState()
   const [loading, setLoading] = useState(false)
   const [form] = Form.useForm();
   const handleCancel = () => {
@@ -17,7 +18,7 @@ const DetailUserComponent = ({ visible, setVisible, setIsUpdateSuccess }) => {
 
   const onFinish = async (newOrder) => {
     try {
-      let res = await createOrderAPI( newOrder);
+      let res = await createOrderAPI(newOrder);
       if (res.status) {
         successNotify(res.data.message);
         setVisible(false);
@@ -30,8 +31,8 @@ const DetailUserComponent = ({ visible, setVisible, setIsUpdateSuccess }) => {
   }
   const handleCheckProduct = _.throttle(async (e) => {
     try {
-      if(e.target.value){
-        const res = await getProductByPIDAPI( e.target.value)
+      if (e.target.value) {
+        const res = await getProductByPIDAPI(e.target.value)
         if (res.status === 200) {
           setProductSelect(res.data.data.product)
         }
@@ -43,13 +44,16 @@ const DetailUserComponent = ({ visible, setVisible, setIsUpdateSuccess }) => {
     }
   }, 3000)
 
-  const handleCheckUser= _.throttle(async (e) => {
+  const handleCheckUser = _.throttle(async (e) => {
     try {
-      if(e.target.value){
-        const res = await getUserByEmailAPI( e.target.value)
+      if (e.target.value) {
+        const res = await getUserByEmailAPI(e.target.value)
         if (res.status === 200) {
           setUserSelect(res.data.data.user)
         }
+        setUserNeed(e.target.value)
+      } else {
+        setUserNeed("")
       }
     } catch (error) {
       errorNotify(error, '', 2);
@@ -92,7 +96,9 @@ const DetailUserComponent = ({ visible, setVisible, setIsUpdateSuccess }) => {
             </Form.Item>
 
             {
-              userSelect?._id ? <Typography.Paragraph><b>Người dùng tồn tại</b></Typography.Paragraph> : <Typography.Paragraph><b>Người dùng không tồn tại</b></Typography.Paragraph>
+              userNeed ? (
+                userSelect?._id ? <Typography.Paragraph><b>Người dùng tồn tại</b></Typography.Paragraph> : <Typography.Paragraph><b>Người dùng không tồn tại</b></Typography.Paragraph>
+              ) : null
             }
 
             <Typography.Paragraph><span style={{ color: 'red' }}>*</span>Nhập giá: </Typography.Paragraph>
@@ -102,7 +108,7 @@ const DetailUserComponent = ({ visible, setVisible, setIsUpdateSuccess }) => {
 
             <Typography.Paragraph><span style={{ color: 'red' }}>*</span>Nhập số lượng: </Typography.Paragraph>
             <Form.Item name="quantity" rules={[{ required: true, message: 'Vui lòng nhập thông tin' }]}>
-              <InputNumber placeholder="Nhập số lượng" style={{ width: "100%" }} min="0"  max={productSelect.quantity || 0}/>
+              <InputNumber placeholder="Nhập số lượng" style={{ width: "100%" }} min="0" max={productSelect.quantity || 0} />
             </Form.Item>
             <Typography.Paragraph><span style={{ color: 'red' }}>*</span>Chọn trạng thái: </Typography.Paragraph>
             <Form.Item name="status" rules={[{ required: true, message: 'Vui lòng nhập thông tin' }]}>

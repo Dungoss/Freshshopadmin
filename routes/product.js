@@ -25,6 +25,9 @@ router.get('/top-ten', checkAuth, checkStatusBlockUser, checkAdmin, async functi
       products: result,
     }))
   } catch (error) {
+    if(error?.message){
+      return res.status(500).json(sendError({message: error.message}))
+    }
     return res.status(500).json(sendError("Lỗi không xác định, vui lòng thử lại"))
   }
 })
@@ -37,6 +40,9 @@ router.get('/pid/:pid', checkAuth, checkStatusBlockUser, async function(req, res
       product: result,
     }))
   } catch (error) {
+    if(error?.message){
+      return res.status(500).json(sendError({message: error.message}))
+    }
     return res.status(500).json(sendError("Lỗi không xác định, vui lòng thử lại"))
   }
 })
@@ -46,6 +52,9 @@ router.post('/', checkAuth, checkStatusBlockUser, checkAdmin, async function(req
     const result = await productServices.createProduct(req.body)
     return res.status(200).json(sendSuccess("Tạo thành công"))
   } catch (error) {
+    if(error?.message){
+      return res.status(500).json(sendError({message: error.message}))
+    }
     return res.status(500).json(sendError("Lỗi không xác định, vui lòng thử lại"))
   }
 })
@@ -55,6 +64,9 @@ router.put('/:id', checkAuth, checkStatusBlockUser, checkAdmin, async function(r
     const result = await productServices.updateProduct(req.params.id, req.body)
     return res.status(200).json(sendSuccess("Cập nhật thành công"))
   } catch (error) {
+    if(error?.message){
+      return res.status(500).json(sendError({message: error.message}))
+    }
     return res.status(500).json(sendError("Lỗi không xác định, vui lòng thử lại"))
   }
 })
@@ -69,6 +81,9 @@ router.delete('/:id',checkAuth, checkStatusBlockUser, checkAdmin, async function
     await productServices.deleteProduct(req.params.id)
     return res.status(200).json(sendSuccess("Xóa thành công" ))
   } catch (error) {
+    if(error?.message){
+      return res.status(500).json(sendError({message: error.message}))
+    }
     return res.status(500).json(sendError("Lỗi không xác định, vui lòng thử lại"))
   }
 })

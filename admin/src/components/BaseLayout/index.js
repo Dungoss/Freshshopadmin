@@ -8,8 +8,8 @@ import {
   AccountBookOutlined,
   DownOutlined,
   HomeOutlined,
-  BookOutlined,
-  PieChartOutlined
+  PieChartOutlined,
+  OrderedListOutlined
 } from '@ant-design/icons';
 import {
   Link, withRouter
@@ -61,7 +61,7 @@ let BaseLayout = (props) => {
                 Trang chủ
               </Link>
             </Menu.Item>
-            <Menu.Item key="user" icon={<PieChartOutlined />}>
+            <Menu.Item key="user" icon={<UserOutlined />}>
               <Link to="/user">
                 Thông tin người dùng
               </Link>
@@ -71,9 +71,9 @@ let BaseLayout = (props) => {
                 Thông tin sản phẩm
               </Link>
             </Menu.Item>
-            <Menu.Item key="order" icon={<PieChartOutlined />}>
+            <Menu.Item key="order" icon={<OrderedListOutlined />}>
               <Link to="/order">
-                Thông tin sản phẩm
+                Thông tin order
               </Link>
             </Menu.Item>
           </Menu>
