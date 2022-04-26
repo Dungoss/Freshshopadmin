@@ -29,7 +29,15 @@ let productSchema = mongoose.Schema({
       type: Number,
       default: 0
     },
-    totalPrice: Number,
+    status: {
+      type: String,
+      enum: ['ON_STOCK', 'OUT_OF_STOCK', 'SUSPEND'],
+      default: 'ON_STOCK'
+    },
+    totalPrice: {
+      type: Number,
+      default: 0
+    },
     createdAt: {
       type: Number,
       default: Date.now()

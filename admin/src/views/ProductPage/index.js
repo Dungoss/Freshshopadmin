@@ -1,18 +1,22 @@
 import {
   Table,
   Button,
-  Tag,
+  Form,
+  Row,
+  Col,
   Popconfirm,
   Spin,
   Typography,
-  Input
+  Input,
+  Select,
 } from 'antd';
 import React, { useState, useEffect } from 'react';
 import _ from 'lodash'
 //list api
 import {
   getAllProductsAPI,
-  destroyProductAPI
+  destroyProductAPI,
+  updateStatusProductAPI
 } from '../../api/product'
 import ModalDetailProduct from './DetailProduct';
 // import ModalUploadExcel from './UploadExcel';
@@ -24,9 +28,9 @@ import ModalCreateProduct from './CreateProduct'
 import ModalUpdateProduct from './UpdateProduct'
 import './index.scss';
 let HomePage = (props) => {
-  let [usersSource, setUsersSource] = useState([]);
+  let [productsSource, setProductSource] = useState([]);
   let [productDetail, setProductDetail] = useState([]);
-  let [totalUsersSource, setTotalUsersSource] = useState([]);
+  let [totalProductsSource, setTotalProductsSource] = useState([]);
   let [isVisibleDetail, setVisibleDetail] = useState(false);
   let [isVisibleCreate, setVisibleCreate] = useState(false);
   let [isVisibleUpdate, setVisibleUpdate] = useState(false);
@@ -50,8 +54,8 @@ let HomePage = (props) => {
               return accountItem;
             })
             : [];
-          setUsersSource(handleDataRes);
-          setTotalUsersSource(res.data.data.totalCount);
+          setProductSource(handleDataRes);
+          setTotalProductsSource(res.data.data.totalCount);
         }
       } catch (error) {
         errorNotify(error, '', 2);
@@ -63,6 +67,7 @@ let HomePage = (props) => {
   }, [
     isUpdateSuccess
   ]);
+  const [form] = Form.useForm();
 
 
   // //xóa mail theo id
@@ -81,26 +86,26 @@ let HomePage = (props) => {
     }
   };
 
-  const handleSearchInput = _.throttle(async (e) => {
-    try {
-      setLoading(true);
-      const res = await getAllProductsAPI({ pid: e.target.value })
-      if (res.status === 200) {
-        let handleDataRes = res.data.data.products.length
-          ? res.data.data.products.map((accountItem, index) => {
-            accountItem.key = index + 1;
-            return accountItem;
-          })
-          : [];
-        setUsersSource(handleDataRes);
-        setTotalUsersSource(res.data.data.totalCount);
-      }
-    } catch (error) {
-      errorNotify(error, '', 2);
-    } finally {
-      setLoading(false);
-    }
-  }, 3000)
+  // const handleSearchInput = _.throttle(async (e) => {
+  //   try {
+  //     setLoading(true);
+  //     const res = await getAllProductsAPI({ pid: e.target.value })
+  //     if (res.status === 200) {
+  //       let handleDataRes = res.data.data.products.length
+  //         ? res.data.data.products.map((accountItem, index) => {
+  //           accountItem.key = index + 1;
+  //           return accountItem;
+  //         })
+  //         : [];
+  //       setProductSource(handleDataRes);
+  //       setTotalProductsSource(res.data.data.totalCount);
+  //     }
+  //   } catch (error) {
+  //     errorNotify(error, '', 2);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }, 3000)
   function copyTextToClipBoard(text, typeCopy) {
     typeCopy = typeCopy.toUpperCase() || '';
     var textField = document.createElement('textarea');
@@ -169,6 +174,46 @@ let HomePage = (props) => {
       },
     },
     {
+      title: 'Giá',
+      dataIndex: 'price',
+      key: 'price',
+      render: (record) => {
+        return (
+          <Typography.Paragraph>
+            {record}
+          </Typography.Paragraph>
+        )
+      },
+    },
+    {
+      title: 'Trạng thái',
+      dataIndex: 'status',
+      key: 'status',
+      render: (status, record) => {
+        status = status || 'ON_STOCK'
+        return (
+          <Select defaultValue={status} value={status} style={{ width: "150px" }} onChange={async (newStatus) => {
+            try {
+              setLoading(true);
+              let res = await updateStatusProductAPI(record._id, { status: newStatus });
+              if (res.status) {
+                successNotify(res.data.message);
+                setIsUpdateSuccess(prevState => !prevState);
+              }
+            } catch (error) {
+              errorNotify(error);
+            } finally {
+              setLoading(false);
+            }
+          }}>
+            <Select.Option value="ON_STOCK">CÒN HÀNG</Select.Option>
+            <Select.Option value="OUT_OF_STOCK">HẾT HÀNG</Select.Option>
+            <Select.Option value="SUSPEND">TẠM NGƯNG</Select.Option>
+          </Select>
+        )
+      },
+    },
+    {
       title: 'Ngày tạo',
       dataIndex: 'updatedAt',
       key: 'updatedAt',
@@ -213,6 +258,32 @@ let HomePage = (props) => {
       },
     },
   ];
+
+
+  const onFinish = async (value) => {
+    try {
+      setLoading(true);
+      value = _.pickBy(value)
+      setConditionSearch({})
+      setConditionSearch(Object.assign({}, value));
+      let res = await getAllProductsAPI(Object.assign({}, value));
+      if (res.status === 200) {
+        let handleDataRes = res.data.data.products.length
+          ? res.data.data.products.map((accountItem, index) => {
+            accountItem.key = index + 1;
+            return accountItem;
+          })
+          : [];
+        setProductSource(handleDataRes);
+        setTotalProductsSource(res.data.data.totalCount);
+      }
+    } catch (error) {
+      errorNotify(error, '', 2);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   const handleTableChange = async (condition) => {
     delete condition['total'];
     delete condition['showSizeChanger'];
@@ -228,8 +299,8 @@ let HomePage = (props) => {
             return accountItem;
           })
           : [];
-        setUsersSource(handleDataRes);
-        setTotalUsersSource(res.data.data.totalCount);
+        setProductSource(handleDataRes);
+        setTotalProductsSource(res.data.data.totalCount);
       }
     } catch (error) {
       errorNotify(error, '', 2);
@@ -248,12 +319,12 @@ let HomePage = (props) => {
               setVisible={setVisibleDetail}
               productDetail={productDetail}
             />
-            <ModalCreateProduct 
+            <ModalCreateProduct
               visible={isVisibleCreate}
               setVisible={setVisibleCreate}
               setIsUpdateSuccess={setIsUpdateSuccess}
             />
-            <ModalUpdateProduct 
+            <ModalUpdateProduct
               visible={isVisibleUpdate}
               setVisible={setVisibleUpdate}
               setIsUpdateSuccess={setIsUpdateSuccess}
@@ -284,24 +355,58 @@ let HomePage = (props) => {
                   marginBottom: '30px',
                 }}
               >
-                <Input
-                  size="middle"
-                  style={{
-                    width: '300px'
-                  }}
-                  placeholder="Tìm kiếm sản phẩm theo mã sản phẩm"
-                  onChange={handleSearchInput}
-                />
+                <Form form={form} onFinish={onFinish}>
+                  <Row >
+                    <Col span="5">
+                      <Form.Item name="pid">
+                        <Input
+                          size="middle"
+                          style={{
+                            width: '300px'
+                          }}
+                          placeholder="Tìm kiếm sản phẩm theo mã sản phẩm"
+                          // onChange={handleSearchInput}
+                        />
+                      </Form.Item>
+                    </Col>
+                    <Col span="5" style={{ marginLeft: '10px' }}>
+                      <Form.Item name="status">
+                        <Select style={{ width: "250px" }} placeholder="Chọn trạng thái">
+                          <Select.Option value="ON_STOCK">CÒN HÀNG</Select.Option>
+                          <Select.Option value="OUT_OF_STOCK">HẾT HÀNG</Select.Option>
+                          <Select.Option value="SUSPEND">TẠM NGƯNG</Select.Option>
+                        </Select>
+                      </Form.Item>
+                    </Col>
+                    <Col span="5" style={{ marginLeft: '10px' }}>
+                      <Form.Item name="order">
+                        <Select style={{ width: "250px" }} placeholder="Chọn sắp xếp">
+                          <Select.Option value={JSON.stringify({createdAt: 1})}>Cũ hơn</Select.Option>
+                          <Select.Option value={JSON.stringify({price: -1})}>Giá giảm dần</Select.Option>
+                          <Select.Option value={JSON.stringify({price: 1})}>Giá tăng dần</Select.Option>
+                        </Select>
+                      </Form.Item>
+                    </Col>
+                    <Col span="5" style={{ marginLeft: '10px' }}>
+                      <Form.Item >
+                        <Button type="primary" htmlType="submit">
+                          Tìm kiếm
+                        </Button>
+                      </Form.Item>
+                    </Col>
+                  </Row>
+
+                </Form>
               </div>
               <Table
-                dataSource={usersSource}
+                dataSource={productsSource}
                 columns={columnsAdmin}
                 id="account-table"
                 style={{ width: '100%', height: '100%' }}
                 pagination={{
                   pageSize: 5,
                   showSizeChanger: false,
-                  total: totalUsersSource,
+                  total: totalProductsSource,
                 }}
                 onChange={(condition) => {
                   handleTableChange(condition);

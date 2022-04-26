@@ -21,7 +21,7 @@ listServices.createNewAccount = async (body) => {
 listServices.getAllAccount = (paginate, userLocal) => {
   const current = Number(paginate?.current) || 1
   const pageSize = Number(paginate?.pageSize) || 5
-  const users = UserModel.find({ _id: { $ne: userLocal.id } }).select({ password: 0 }).skip((current - 1) * pageSize).limit(pageSize).sort({ updatedAt: -1}).lean().exec()
+  const users = UserModel.find({ _id: { $ne: userLocal.id } }).select({ password: 0 }).skip((current - 1) * pageSize).limit(pageSize).sort({ createdAt: -1}).lean().exec()
   const totalCount = UserModel.countDocuments({ _id: { $ne: userLocal.id } }).lean().exec()
   return {
     users,

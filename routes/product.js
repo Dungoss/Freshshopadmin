@@ -13,6 +13,7 @@ router.get('/', checkAuth, checkStatusBlockUser, async function(req, res, next){
       totalCount: await result.totalCount
     }))
   } catch (error) {
+    console.log(error, "lỗi")
     return res.status(500).json(sendError("Lỗi không xác định, vui lòng thử lại"))
   }
 })
@@ -51,6 +52,18 @@ router.post('/', checkAuth, checkStatusBlockUser, checkAdmin, async function(req
   try {
     const result = await productServices.createProduct(req.body)
     return res.status(200).json(sendSuccess("Tạo thành công"))
+  } catch (error) {
+    if(error?.message){
+      return res.status(500).json(sendError({message: error.message}))
+    }
+    return res.status(500).json(sendError("Lỗi không xác định, vui lòng thử lại"))
+  }
+})
+
+router.put('/status/:id', checkAuth, checkStatusBlockUser, checkAdmin, async function(req, res, next){
+  try {
+    const result = await productServices.updateStatusProduct(req.params.id, req.body.status)
+    return res.status(200).json(sendSuccess("Cập nhật thành công"))
   } catch (error) {
     if(error?.message){
       return res.status(500).json(sendError({message: error.message}))

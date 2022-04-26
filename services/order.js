@@ -38,11 +38,11 @@ listServices.getAllOrder = (query, userLocal) => {
       ...body,
       ...{
         $and: [{
-          updatedAt: {
+          createdAt: {
             $gte: query.start
           }
         },{
-          updatedAt: {
+          createdAt: {
             $lte: query.end
           }
         }]
@@ -61,7 +61,7 @@ listServices.getAllOrder = (query, userLocal) => {
                   .skip((current - 1) * pageSize)
                   .limit(pageSize)
                   .populate(["idUser", "idProduct"])
-                  .sort({ updatedAt: -1 })
+                  .sort({ createdAt: -1 })
                   .lean().exec()
     const totalCount = OrderModel.countDocuments(body).lean().exec()
     return {

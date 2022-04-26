@@ -30,28 +30,6 @@ app.use('/users', usersRouter);
 app.use('/auth', authRouter);
 app.use('/products', productsRouter);
 app.use('/orders', ordersRouter);
-app.get("/logout", async (req, res) => {
-  if (req.headers.authorization) {
-    const token = req.headers.authorization.split(" ")[1];
-    try {
-      await redisClient.LPUSH("token", token);
-      return res.status(200).json({
-        status: 200,
-        data: "You are logged out",
-      });
-    } catch (error) {
-      return res.status(400).json({
-        status: 500,
-        error: error.toString(),
-      });
-    }
-  } else {
-    return res.status(301).json({
-      status: 301,
-      error: "invalid token",
-    });
-  }
-});
 app.get('/*', function(req, res, next){
   res.sendFile(path.join(__dirname, './admin/build/index.html'))
 })

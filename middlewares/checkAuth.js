@@ -10,7 +10,6 @@ async function getOrSetCacheRedis(key, cb) {
       try {
         const data = await clientRedis.GET(key)
         if(data != null){
-            console.log("aaaa")
           return resolve(JSON.parse(data));
         }
         const freshData = await cb;
@@ -35,11 +34,6 @@ async function checkAuth(req, res, next) {
     var authHeader = req.headers.authorization || '';
     if (authHeader.startsWith('Bearer ') || authHeader.startsWith('bearer ')) {
         token = authHeader.substring(7, authHeader.length);
-    }
-    // check backlist token
-    const tokenUsed = await clientRedis.LRANGE('token', 0, -1);
-    if (tokenUsed.includes(token)) {
-        return res.status(500).json(sendError({ message: 'Token không tồn tại'}));
     }
 
     try {
