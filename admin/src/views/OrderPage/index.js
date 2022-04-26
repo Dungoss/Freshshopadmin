@@ -297,11 +297,13 @@ let HomePage = (props) => {
     try {
       setLoading(true);
       if(value.date){
-        value.start = moment(value.date[0]._d).valueOf()
-        value.end = moment(value.date[1]._d).valueOf()
+        const start = new Date(moment(value.date[0]._d).valueOf()).setHours(0, 0, 0)
+        value.start = new Date(start).getTime()
+        const end = new Date(moment(value.date[1]._d).valueOf()).setHours(23, 59, 59)
+        value.end = new Date(end).getTime()
       }
-      setConditionSearch(Object.assign({}, conditionSearch, value));
-      let res = await getAllOrderAPI(Object.assign({}, conditionSearch, value));
+      setConditionSearch(Object.assign({}, value));
+      let res = await getAllOrderAPI(Object.assign({}, value));
       if (res.status === 200) {
         let handleDataRes = res.data.data.orders.length
           ? res.data.data.orders.map((accountItem, index) => {

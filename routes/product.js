@@ -13,7 +13,6 @@ router.get('/', checkAuth, checkStatusBlockUser, async function(req, res, next){
       totalCount: await result.totalCount
     }))
   } catch (error) {
-    console.log(error, "lỗi")
     return res.status(500).json(sendError("Lỗi không xác định, vui lòng thử lại"))
   }
 })

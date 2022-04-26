@@ -242,6 +242,26 @@ let HomePage = (props) => {
     }
   };
 
+  const handleSearchInput = _.throttle(async (e) => {
+    try {
+      setLoading(true);
+      let res = await getAllUsersAPI({email: e.target.value});
+      if (res.status === 200) {
+        let handleDataRes = res.data.data.users.length
+        ? res.data.data.users.map((accountItem, index) => {
+          accountItem.key = index + 1;
+          return accountItem;
+        })
+        : [];
+        setUsersSource(handleDataRes);
+        setTotalUsersSource(res.data.data.totalCount);
+      }
+    } catch (error) {
+      errorNotify(error, '', 2);
+    } finally {
+      setLoading(false);
+    }
+  }, 3000)
   return (
     <>
       {
@@ -276,6 +296,22 @@ let HomePage = (props) => {
                   }}
                 >Thêm user</Button>
               </div>
+              <div
+                style={{
+                  width: '100%',
+                  marginBottom: '30px',
+                }}
+              >
+                <Input
+                  size="middle"
+                  style={{
+                    width: '300px'
+                  }}
+                  placeholder="Tìm kiếm người dùng theo email"
+                  onChange={handleSearchInput}
+                />
+              </div>
+
               <Table
                 dataSource={usersSource}
                 columns={columnsAdmin}

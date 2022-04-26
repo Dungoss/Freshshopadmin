@@ -18,11 +18,20 @@ listServices.createNewAccount = async (body) => {
 
 
 
-listServices.getAllAccount = (paginate, userLocal) => {
-  const current = Number(paginate?.current) || 1
-  const pageSize = Number(paginate?.pageSize) || 5
-  const users = UserModel.find({ _id: { $ne: userLocal.id } }).select({ password: 0 }).skip((current - 1) * pageSize).limit(pageSize).sort({ createdAt: -1}).lean().exec()
-  const totalCount = UserModel.countDocuments({ _id: { $ne: userLocal.id } }).lean().exec()
+listServices.getAllAccount = (query, userLocal) => {
+  const current = Number(query?.current) || 1
+  const pageSize = Number(query?.pageSize) || 5
+  const body = {
+    _id: { $ne: userLocal.id }
+  }
+  if(query?.email){
+    body.email = {
+      $regex: query?.email,
+      $options: 'gi',
+    }
+  }
+  const users = UserModel.find(body).select({ password: 0 }).skip((current - 1) * pageSize).limit(pageSize).sort({ createdAt: -1}).lean().exec()
+  const totalCount = UserModel.countDocuments(body).lean().exec()
   return {
     users,
     totalCount
